@@ -1,0 +1,7 @@
+{
+    "embedding_dim": 128,
+    "hidden_dim": 128,
+    "num_filters": 100,
+    "kernel_size": 3,
+    "dropout": 0.3
+}
