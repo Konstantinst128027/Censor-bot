@@ -37,8 +37,6 @@ class UserWarning(Base):
     # Связь с группой
     group = relationship("ActiveGroup", back_populates="users")
     
-    # Связь с сообщениями
-    messages = relationship("WarningMessage", back_populates="user", cascade="all, delete-orphan")
 
 
 class WarningMessage(Base):
@@ -52,8 +50,6 @@ class WarningMessage(Base):
     probability = Column(Float)
     group_name = Column(String(255))
     user_name = Column(String(255))
-    
-    user = relationship("UserWarning", back_populates="messages")
 
 
 async def init_db():

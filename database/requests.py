@@ -73,11 +73,10 @@ async def remove_group(group_id: int) -> None:
                 await session.delete(group)
 
 
-# Удаляем пользователя из базы данных
+# Удаляем пользователя и его сообщения из базы данных
 async def remove_user(user_id: int, group_id: int) -> None:
     async with async_session() as session:
         async with session.begin():
-            # Находим объект пользователя
             result = await session.execute(
                 select(UserWarning).where(
                     UserWarning.user_id == user_id,
@@ -87,9 +86,13 @@ async def remove_user(user_id: int, group_id: int) -> None:
             user = result.scalar_one_or_none()
             
             if user:
+                await session.execute(
+                    delete(WarningMessage).where(
+                        WarningMessage.user_id == user.id,
+                        WarningMessage.chat_id == group_id
+                    )
+                )
                 await session.delete(user)
-            else:
-                print("Пользователь не был найден!")
 
 
 # активна ли группа или нет

@@ -95,6 +95,7 @@ async def check_toxicity(message: Message) -> None:
         await db.save_message(user_id, message_text, probability, chat_title, chat_id, message_id)
         
         text = f"{user_name}, ваше сообщение удалено!\n\n"
+        text += f"Ваше сообщение: _{message_text}_"
         text += f"Токсичность: {probability:.1%}\n"
         text += f"Предупреждение {warning_count}/5"
 
@@ -168,12 +169,8 @@ async def confirm_toxic(callback: CallbackQuery) -> None:
     
     await callback.message.delete()
     
-    await callback.message.answer(
-        text=f"Сообщение признано токсичным!\nПользователю {user_name} отправлено предупреждение!",
-        parse_mode="Markdown"
-    )
-    
-    text = f"{user_name}, ваше сообщение удалено!\n\n"
+    text = f"{user_name}, ваше сообщение удалено!\n"
+    text += f"Ваше сообщение: {message_data.message_text}\n"
     text += f"Токсичность: {message_data.probability:.1%}\n"
     text += f"Предупреждение {warning_count}/5"
 

@@ -3,6 +3,7 @@ from aiogram import Bot
 import asyncio
 from datetime import datetime
 import database.requests as db
+from aiohttp import ServerDisconnectedError
 
 # Функция для отправки сообщений администраторам или создателю
 async def notify_admins_or_creator(bot: Bot, group_id: int, text: str) -> None:
@@ -94,7 +95,12 @@ async def periodic_status_check(bot: Bot, interval_seconds: int = 10):
                     if bot_member.status in ['left', 'kicked']:
                         print(f"Бот удалён из {db_group.group_name}, удаляем из БД")
                         await db.remove_group(db_group.group_id)
-                        
+
+                except ServerDisconnectedError as e:
+                    # Игнорируем ошибку соединения
+                    print(f"⚠️ Ошибка соединения при проверке группы {db_group.group_name}: {e}")
+                    continue
+
                 except Exception as e:
                     # Ошибка при проверке - бота нет в группе
                     print(f"Группа {db_group.group_name} удалена (ошибка: {e})")
