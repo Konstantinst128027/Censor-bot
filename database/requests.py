@@ -1,5 +1,5 @@
 from sqlalchemy import select, update, delete
-from .models import UserWarning, WarningMessage, ActiveGroup, async_session
+from .models import UserWarning, WarningMessage, Group, async_session
 
 # добавляем группу в таблицу и активируем ее. Если же она была уже в таблице смотрим не изменился ли ее id если да, то меняем id
 async def add_group(group_id: int, group_name: str) -> None:
@@ -7,10 +7,10 @@ async def add_group(group_id: int, group_name: str) -> None:
         async with session.begin():
             # Удаляем старые записи с таким же названием
             await session.execute(
-                delete(ActiveGroup).where(ActiveGroup.group_name == group_name)
+                delete(Group).where(Group.group_name == group_name)
             )
             # Добавляем новую
-            session.add(ActiveGroup(
+            session.add(Group(
                 group_id=group_id,
                 group_name=group_name,
                 is_active=False
@@ -21,14 +21,14 @@ async def add_group(group_id: int, group_name: str) -> None:
 async def get_group_by_id(group_id: int):
     async with async_session() as session:
         result = await session.execute(
-            select(ActiveGroup).where(ActiveGroup.group_id == group_id)
+            select(Group).where(Group.group_id == group_id)
         )
         return result.scalar_one_or_none()
 
 # Получае список всех групп
 async def get_all_groups():
     async with async_session() as session:
-        result = await session.execute(select(ActiveGroup))
+        result = await session.execute(select(Group))
         return result.scalars().all()
 
 
@@ -37,8 +37,8 @@ async def activate_group(group_id: int) -> None:
     async with async_session() as session:
         async with session.begin():
             await session.execute(
-                update(ActiveGroup)
-                .where(ActiveGroup.group_id == group_id)
+                update(Group)
+                .where(Group.group_id == group_id)
                 .values(is_active=True)
             )
 
@@ -48,8 +48,8 @@ async def deactivate_group(group_id: int) -> None:
     async with async_session() as session:
         async with session.begin():
             await session.execute(
-                update(ActiveGroup)
-                .where(ActiveGroup.group_id == group_id)
+                update(Group)
+                .where(Group.group_id == group_id)
                 .values(is_active=False)
             )
 
@@ -60,7 +60,7 @@ async def remove_group(group_id: int) -> None:
         async with session.begin():
             # Находим группу
             result = await session.execute(
-                select(ActiveGroup).where(ActiveGroup.group_id == group_id)
+                select(Group).where(Group.group_id == group_id)
             )
             group = result.scalar_one_or_none()
             
@@ -99,7 +99,7 @@ async def remove_user(user_id: int, group_id: int) -> None:
 async def is_group_active(chat_id: int) -> bool:
     async with async_session() as session:
         result = await session.execute(
-            select(ActiveGroup.is_active).where(ActiveGroup.group_id == chat_id)
+            select(Group.is_active).where(Group.group_id == chat_id)
         )
         is_active = result.scalar_one_or_none()
         return is_active

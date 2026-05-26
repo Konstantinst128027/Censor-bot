@@ -1,6 +1,7 @@
 # Censor Bot
 
 Telegram бот для автоматической модерации чатов с использованием нейросетевой модели для определения токсичности сообщений.
+Обучение модели: https://colab.research.google.com/drive/1oazbH3QZuBkIebgxima1RbgXeQpTEWC7?usp=sharing
 
 ## О проекте
 

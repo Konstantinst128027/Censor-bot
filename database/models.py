@@ -12,7 +12,7 @@ engine = create_async_engine(url=os.getenv("DB_URL"))  # создает базу
 async_session = async_sessionmaker(engine)
 Base = declarative_base() # метакласс для создания таблиц в базе данных через SQLalchemy
 
-class ActiveGroup(Base):
+class Group(Base):
     __tablename__ = 'active_groups'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
