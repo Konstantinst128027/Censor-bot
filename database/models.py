@@ -35,7 +35,7 @@ class UserWarning(Base):
     warning_count = Column(Integer, default=0)
     
     # Связь с группой
-    group = relationship("ActiveGroup", back_populates="users")
+    group = relationship("Group", back_populates="users")
     
 
 

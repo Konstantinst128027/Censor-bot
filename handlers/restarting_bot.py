@@ -98,7 +98,7 @@ async def periodic_status_check(bot: Bot, interval_seconds: int = 10):
 
                 except ServerDisconnectedError as e:
                     # Игнорируем ошибку соединения
-                    print(f"⚠️ Ошибка соединения при проверке группы {db_group.group_name}: {e}")
+                    print(f"Ошибка соединения при проверке группы {db_group.group_name}: {e}")
                     continue
 
                 except Exception as e:
